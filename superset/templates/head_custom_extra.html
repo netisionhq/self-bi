@@ -17,6 +17,59 @@
   under the License.
 #}
 
+<script type="text/javascript" >
+  // Custom JavaScript for Superset
+  (function() {
+    console.log('Custom script loaded');
+
+    const isLoginPage = window.location.pathname.includes('/login');
+  
+    if (!isLoginPage) {
+      console.log('[Auto-login] Not on login page, skipping auto-login');
+      return;
+    }
+    
+    const executeLogin = async () => {
+      try {
+        console.log("[Auto-login] Executing login request...");
+
+        const loginRes = await fetch("/login/", {
+          method: "POST",
+          credentials: "include",
+          headers: { "Content-Type": "application/x-www-form-urlencoded" },
+          body: new URLSearchParams({
+            username: "admin",
+            password: "admin",
+            provider: "db",
+          }),
+        });
+
+        console.log("[Auto-login] Response:", loginRes.status);
+
+        if (!loginRes.ok && !loginRes.redirected) {
+          console.error("[Auto-login] Failed:", loginRes.status);
+          return;
+        }
+
+        // console.log("[Auto-login] ✅ Success. Redirecting to:", nextUrl);
+        window.location.href = `http://localhost:8088/superset/dashboard/6/?edit=true&standalone=true`;
+      } catch (e) {
+        console.error("[Auto-login] Error:", e);
+      }
+    };
+
+
+    // Wait for DOM to be ready
+    document.addEventListener('DOMContentLoaded', function() {
+      console.log('Superset page loaded');
+      executeLogin()
+      // Your custom code here
+      // Example: Add custom analytics, modify UI, etc.
+    });
+  })();
+</script>
+
+
 {#
   This file may be overridden in your custom deployment.
   It will be included in the head block in every view in superset and is a
