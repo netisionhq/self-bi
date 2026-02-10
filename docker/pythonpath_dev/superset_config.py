@@ -181,3 +181,26 @@ APP_NAME="SELF-BI"
 SESSION_COOKIE_SAMESITE = "lax"
 SESSION_COOKIE_SECURE = False
 ENABLE_PROXY_FIX = True
+
+from redis import Redis
+from datetime import timedelta
+
+# Store session data server-side instead of in the cookie
+SESSION_SERVER_SIDE = True
+SESSION_TYPE = "redis"
+SESSION_USE_SIGNER = True  # signs the session id cookie (integrity)
+
+# Use a dedicated DB for sessions (avoid clashing with celery/results/cache)
+REDIS_SESSION_DB = int(os.getenv("REDIS_SESSION_DB", "2"))
+
+SESSION_REDIS = Redis(
+    host=REDIS_HOST,
+    port=int(REDIS_PORT),
+    db=REDIS_SESSION_DB,
+    password=os.getenv("REDIS_PASSWORD") or None,
+)
+
+# Session TTL (controls how long sessions remain valid)
+PERMANENT_SESSION_LIFETIME = timedelta(
+    hours=int(os.getenv("SESSION_LIFETIME_HOURS", "12"))
+)
