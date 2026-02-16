@@ -47,6 +47,7 @@ import { setSaveChartModalVisibility } from 'src/explore/actions/saveModalAction
 import { SaveActionType } from 'src/explore/types';
 import { UserWithPermissionsAndRoles } from 'src/types/bootstrapTypes';
 import {
+  removeChartState,
  // removeChartState,
   updateChartState,
 } from 'src/dashboard/actions/dashboardState';
