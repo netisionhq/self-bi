@@ -136,6 +136,10 @@ const plugins = [
     'process.env.REDUX_DEFAULT_MIDDLEWARE':
       process.env.REDUX_DEFAULT_MIDDLEWARE,
     'process.env.SCARF_ANALYTICS': JSON.stringify(process.env.SCARF_ANALYTICS),
+    'process.env.NEXUS_DOMAIN':JSON.stringify(process.env.NEXUS_DOMAIN),
+    'process.env.SELF_BI_DOMAIN':JSON.stringify(process.env.SELF_BI_DOMAIN),
+    'process.env.NEXUS_NAV_STRING':JSON.stringify(process.env.NEXUS_NAV_STRING),
+    
   }),
 
   new CopyPlugin({
