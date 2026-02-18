@@ -42,6 +42,8 @@ FAB_LOG_LEVEL = logging.DEBUG
 
 
 logger = logging.getLogger()
+NEXUS_DOMAIN=os.getenv("NEXUS_DOMAIN","http://64.227.152.66:3000")
+SELF_BI_DOMAIN=os.getenv("SELF_BI_DOMAIN","http://64.227.152.66:8088")
 
 
 
@@ -55,7 +57,7 @@ CORS_OPTIONS = {
     'supports_credentials': True,
     'allow_headers': ['*'], # Or be more specific: ['Authorization', 'Content-Type', 'X-CSRFToken']
     'resources': ['*'],     # Or be more specific: {r"/api/*": {"origins": "http://localhost:3000"}}
-    'origins': ['http://localhost:3000'] # Add your Next.js app's origin
+    'origins': [NEXUS_DOMAIN] # Add your Next.js app's origin
 }
 
 
@@ -139,7 +141,7 @@ CELERY_CONFIG = CeleryConfig
 
 FEATURE_FLAGS = {"ALERT_REPORTS": True,"EMBEDDED_SUPERSET": True,"GLOBAL_ASYNC_QUERIES": False, "GUEST_TOKEN": True, }
 ALERT_REPORTS_NOTIFICATION_DRY_RUN = True
-GUEST_TOKEN_JWT_AUDIENCE = "http://localhost:8088/"
+GUEST_TOKEN_JWT_AUDIENCE = SELF_BI_DOMAIN
 
 WEBDRIVER_BASEURL = "http://superset:8088/"  # When using docker compose baseurl should be http://superset_app:8088/  # noqa: E501
 # The base URL for the email report hyperlinks.
