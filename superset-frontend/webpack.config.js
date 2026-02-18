@@ -17,6 +17,8 @@
  * specific language governing permissions and limitations
  * under the License.
  */
+require("dotenv").config({ path: "../docker/.env"  });
+
 const fs = require('fs');
 const path = require('path');
 const webpack = require('webpack');
