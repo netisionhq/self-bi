@@ -42,8 +42,8 @@ FAB_LOG_LEVEL = logging.DEBUG
 
 
 logger = logging.getLogger()
-NEXUS_DOMAIN=os.getenv("NEXUS_DOMAIN","https://bi.netision.com:3000")
-SELF_BI_DOMAIN=os.getenv("SELF_BI_DOMAIN","https://bi.netision.com:8088")
+NEXUS_DOMAIN=os.getenv("NEXUS_DOMAIN","https://nexus-dev.netision.com")
+SELF_BI_DOMAIN=os.getenv("SELF_BI_DOMAIN","https://bi.netision.com")
 
 
 
@@ -66,7 +66,8 @@ OVERRIDE_HTTP_HEADERS = {'X-Frame-Options': 'ALLOWALL'}
 TALISMAN_ENABLED = False
 ENABLE_CORS = True
 WTF_CSRF_ENABLED = False
-HTTP_HEADERS={"X-Frame-Options":"ALLOWALL"}
+# HTTP_HEADERS={"X-Frame-Options":"ALLOWALL"}
+# HTTP_HEADERS={}
 
 #---Modification done
 
