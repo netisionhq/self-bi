@@ -42,8 +42,8 @@ FAB_LOG_LEVEL = logging.DEBUG
 
 
 logger = logging.getLogger()
-NEXUS_DOMAIN=os.getenv("NEXUS_DOMAIN","http://64.227.152.66:3000")
-SELF_BI_DOMAIN=os.getenv("SELF_BI_DOMAIN","http://64.227.152.66:8088")
+NEXUS_DOMAIN=os.getenv("NEXUS_DOMAIN","https://bi.netision.com:3000")
+SELF_BI_DOMAIN=os.getenv("SELF_BI_DOMAIN","https://bi.netision.com:8088")
 
 
 
