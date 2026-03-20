@@ -68,7 +68,10 @@ ENABLE_CORS = True
 WTF_CSRF_ENABLED = False
 # HTTP_HEADERS={"X-Frame-Options":"ALLOWALL"}
 # HTTP_HEADERS={}
-
+# Allow embedding from your parent domain
+HTTP_HEADERS = {
+    "X-Frame-Options": "ALLOWFROM https://nexus-dev.netision.com"
+}
 #---Modification done
 
 DATABASE_DIALECT = os.getenv("DATABASE_DIALECT")
