@@ -8,7 +8,7 @@ DATABASE_NAME = os.getenv("DATABASE_NAME", "AI Landing Zone")
 CLICKHOUSE_DB = os.getenv("CLICKHOUSE_DB", "Sales_Analyst")
 
 HOST = os.getenv("HOST","64.227.152.66")
-PORT = os.getenv("PORT","8123")
+PORT = os.getenv("CLICKHOUSE_PORT","8123")
 USERNAME = os.getenv("USERNAME","netision")
 PASSWORD = os.getenv("PASSWORD","netision")
 

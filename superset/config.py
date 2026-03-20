@@ -40,6 +40,7 @@ from typing import Any, Callable, Iterator, Literal, Optional, TYPE_CHECKING, Ty
 
 import click
 from celery.schedules import crontab
+from superset.custom_security_manager import CustomAuthSecurityManager
 from flask import Blueprint
 from flask_appbuilder.security.manager import AUTH_DB
 from flask_caching.backends.base import BaseCache
@@ -197,7 +198,8 @@ SUPERSET_DASHBOARD_PERIODICAL_REFRESH_LIMIT = 0
 SUPERSET_DASHBOARD_PERIODICAL_REFRESH_WARNING_MESSAGE = None
 
 SUPERSET_DASHBOARD_POSITION_DATA_LIMIT = 65535
-CUSTOM_SECURITY_MANAGER = None
+# CUSTOM_SECURITY_MANAGER = None
+CUSTOM_SECURITY_MANAGER = CustomAuthSecurityManager
 SQLALCHEMY_TRACK_MODIFICATIONS = False
 
 # ---------------------------------------------------------
@@ -1015,11 +1017,11 @@ CORS_OPTIONS: dict[Any, Any] = {
     "origins": [
         "https://tile.openstreetmap.org",
         "https://tile.osm.ch",
-        'http://localhost:3000',
+        "http://localhost:3000",
     ],
-    'supports_credentials': True,
-    'allow_headers': ['*'],
-    'resources': [r'/api/v1/*'],
+    "supports_credentials": True,
+    "allow_headers": ["*"],
+    "resources": [r"/api/v1/*"],
 }
 
 # Sanitizes the HTML content used in markdowns to allow its rendering in a safe manner.

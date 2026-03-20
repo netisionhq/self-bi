@@ -1,0 +1,58 @@
+name: Deploy Superset Frontend (Prod VM)
+
+on:
+  #  Push trigger
+  push:
+    branches:
+      - superset-frontend
+
+  #  Manual trigger
+  workflow_dispatch:
+concurrency:
+  group: superset-frontend-deploy
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Deploy Superset to VM via SSH
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          port: 22
+          script: |
+            echo "🚀 Deploying SELF-BI (superset-frontend)..."
+
+            cd /root/apps/self-bi || exit 1
+
+            echo "🔍 Checking branch..."
+            git branch
+
+            echo "⬇ Pulling latest code..."
+            git fetch origin
+            git checkout superset-frontend
+            git pull origin superset-frontend
+
+            echo "🛑 Stopping containers..."
+            docker compose -f docker-compose-non-dev.yml down
+
+            echo "🏗 Building fresh images"
+            docker compose -f docker-compose-non-dev.yml build --progress plain
+
+            echo "🚀 Starting containers..."
+            docker compose -f docker-compose-non-dev.yml up -d
+
+            echo "⏳ Waiting 20 seconds..."
+            sleep 20
+
+            echo "📦 Running containers:"
+            docker ps | grep superset || true
+
+            echo "📜 Init logs:"
+            docker logs superset_init --tail 50 || true
+
+            echo "✅ Deployment completed!"
