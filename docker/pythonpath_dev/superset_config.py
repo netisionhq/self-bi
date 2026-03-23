@@ -67,11 +67,14 @@ TALISMAN_ENABLED = False
 ENABLE_CORS = True
 WTF_CSRF_ENABLED = False
 # HTTP_HEADERS={"X-Frame-Options":"ALLOWALL"}
-# HTTP_HEADERS={}
-# Allow embedding from your parent domain
 HTTP_HEADERS = {
-    "X-Frame-Options": "ALLOWFROM https://nexus-dev.netision.com"
+    # Modern replacement for X-Frame-Options (works in all current browsers)
+    "Content-Security-Policy": f"frame-ancestors 'self' {NEXUS_DOMAIN}"
 }
+# Allow embedding from your parent domain
+# HTTP_HEADERS = {
+#     "X-Frame-Options": "ALLOWFROM https://nexus-dev.netision.com"
+# }
 #---Modification done
 
 DATABASE_DIALECT = os.getenv("DATABASE_DIALECT")
@@ -184,6 +187,6 @@ except ImportError:
 # APP_ICON = "superset-frontend/src/assets/branding/superset-logo-horiz.png"
 # APP_ICON="/static/assets/images/Nexus.png"
 APP_NAME="SELF-BI"
-SESSION_COOKIE_SAMESITE = "lax"
-SESSION_COOKIE_SECURE = False
+SESSION_COOKIE_SAMESITE = "None"
+SESSION_COOKIE_SECURE = True
 ENABLE_PROXY_FIX = True
