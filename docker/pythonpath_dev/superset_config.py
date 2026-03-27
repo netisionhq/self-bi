@@ -42,7 +42,7 @@ FAB_LOG_LEVEL = logging.DEBUG
 
 
 logger = logging.getLogger()
-NEXUS_DOMAIN=os.getenv("NEXUS_DOMAIN","http://localhost:3000")
+NEXUS_DOMAIN=os.getenv("NEXUS_DOMAIN","https://nexus-dev.netision.com")
 SELF_BI_DOMAIN=os.getenv("SELF_BI_DOMAIN","https://bi.netision.com")
 
 
