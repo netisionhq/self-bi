@@ -94,13 +94,13 @@ export const useThemeMenuItems = ({
     ...(allowOSPreference
       ? [
           {
-            key: ThemeMode.SYSTEM,
+            key: ThemeMode.DEFAULT,
             label: (
               <>
                 <Icons.FormatPainterOutlined /> {t('Match system')}
               </>
             ),
-            onClick: () => handleSelect(ThemeMode.SYSTEM),
+            onClick: () => handleSelect(ThemeMode.DEFAULT),
           },
         ]
       : []),
