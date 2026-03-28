@@ -244,7 +244,7 @@ class DashboardGrid extends PureComponent {
           
           if(window.self!=window.parent){
              
-           navigateTo(`${NEXUS_DOMAIN}/self-bi/chart/add/${dashboardId}`, {
+           navigateTo(`${NEXUS_DOMAIN}/self-bi/chart/add/${dashboardId}?sidebar=false`, {
             newWindow: true,
           });
           return;
@@ -277,7 +277,7 @@ class DashboardGrid extends PureComponent {
           
           if(window.self!=window.parent){
            
-            navigateTo(`${NEXUS_DOMAIN}/self-bi/chart/add/${dashboardId}`, {
+            navigateTo(`${NEXUS_DOMAIN}/self-bi/chart/add/${dashboardId}?sidebar=false`, {
               newWindow: true,
               isExternal: true,
             });

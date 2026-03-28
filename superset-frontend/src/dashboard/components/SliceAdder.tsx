@@ -383,7 +383,7 @@ class SliceAdder extends Component<SliceAdderProps, SliceAdderState> {
                 
               
               if(window.self!=window.parent){
-                const targetUrl = `/self-bi/chart/add/${this.props.dashboardId}`;
+                const targetUrl = `/self-bi/chart/add/${this.props.dashboardId}?sidebar=false`;
               console.log("sending data to domain",NEXUS_DOMAIN);
 
                 // Tell the parent window (your Next.js app) to navigate
