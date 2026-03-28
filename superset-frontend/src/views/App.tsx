@@ -70,6 +70,50 @@ const LocationPathnameLogger = () => {
   }, [location.pathname]);
   return <></>;
 };
+const AppShell = () => {
+ const location = useLocation();
+const isExplore = location.pathname.startsWith('/explore') && (window.self!=window.parent) ;
+
+ 
+
+  const hideMenu = isExplore;
+  return (
+    <>
+      {!hideMenu && (
+        <Menu
+          data={bootstrapData.common.menu_data}
+          isFrontendRoute={isFrontendRoute}
+        />
+      )}
+
+      <Switch>
+        {routes.map(({ path, Component, props = {}, Fallback = Loading }) => (
+          <Route path={path} key={path}>
+            <Suspense fallback={<Fallback />}>
+              <Layout>
+                <Layout.Content
+                  css={css`
+                    display: flex;
+                    flex-direction: column;
+                  `}
+                >
+                  <ErrorBoundary
+                    css={css`
+                      margin: 16px;
+                    `}
+                  >
+                    <Component user={bootstrapData.user} {...props} />
+                  </ErrorBoundary>
+                </Layout.Content>
+              </Layout>
+            </Suspense>
+          </Route>
+        ))}
+      </Switch>
+    </>
+  );
+};
+
 
 const App = () => (
   <Router basename={applicationRoot()}>
@@ -77,7 +121,7 @@ const App = () => (
     <LocationPathnameLogger />
     <RootContextProviders>
       <ExtensionsStartup />
-      <Menu
+      {/* <Menu
         data={bootstrapData.common.menu_data}
         isFrontendRoute={isFrontendRoute}
       />
@@ -104,7 +148,8 @@ const App = () => (
             </Suspense>
           </Route>
         ))}
-      </Switch>
+      </Switch> */}
+      <AppShell/>
       <ToastContainer />
     </RootContextProviders>
   </Router>

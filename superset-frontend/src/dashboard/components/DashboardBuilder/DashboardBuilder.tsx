@@ -32,7 +32,7 @@ import { Droppable } from 'src/dashboard/components/dnd/DragDroppable';
 import DashboardComponent from 'src/dashboard/containers/DashboardComponent';
 import WithPopoverMenu from 'src/dashboard/components/menu/WithPopoverMenu';
 import getDirectPathToTabIndex from 'src/dashboard/util/getDirectPathToTabIndex';
-import { URL_PARAMS } from 'src/constants';
+import {  NEXUS_DOMAIN, NEXUS_NAV_STRING, URL_PARAMS } from 'src/constants';
 import { getUrlParam } from 'src/utils/urlUtils';
 import {
   DashboardLayout,
@@ -563,6 +563,27 @@ const DashboardBuilder = () => {
     ? theme.sizeUnit * 4
     : theme.sizeUnit * 8;
 
+  const notifyParentOfEdit = useCallback(() => {
+    const url = new URL(window.location.href);
+    const params = url.searchParams;
+    const isEmbedded = window.self !== window.top;
+
+    let id = params.get('native_id');
+    if (!id) {
+      const segments = url.pathname.split('/').filter(Boolean);
+      id = segments[segments.length - 1];
+    }
+
+    console.log("got the id of dashboard:",id);
+    console.log("nexus domain",NEXUS_DOMAIN);
+
+    if (isEmbedded && id) {
+      window.top?.postMessage(
+        { type:NEXUS_NAV_STRING, url: `/self-bi/edit/${id}` },
+        NEXUS_DOMAIN
+      );
+    }
+}, []);
   const renderChild = useCallback(
     adjustedWidth => {
       const filterBarWidth = dashboardFiltersOpen
@@ -662,6 +683,9 @@ const DashboardBuilder = () => {
               buttonAction={() => {
                 dispatch(setEditMode(true));
                 dispatch(clearDashboardHistory());
+                notifyParentOfEdit();
+
+
               }}
               image="dashboard.svg"
             />

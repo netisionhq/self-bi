@@ -23,7 +23,8 @@ import { styled } from '@apache-superset/core/ui';
 import { withTheme, Theme } from '@emotion/react';
 import { getUrlParam } from 'src/utils/urlUtils';
 import { FilterPlugins, URL_PARAMS } from 'src/constants';
-import { Link, withRouter, RouteComponentProps } from 'react-router-dom';
+//import { Link, withRouter, RouteComponentProps } from 'react-router-dom';
+import {withRouter, RouteComponentProps } from 'react-router-dom';
 import { AsyncSelect, Button, Steps } from '@superset-ui/core/components';
 import withToasts from 'src/components/MessageToasts/withToasts';
 
@@ -37,7 +38,7 @@ import {
   Dataset,
   DatasetSelectLabel,
 } from 'src/features/datasets/DatasetSelectLabel';
-import { Icons } from '@superset-ui/core/components/Icons';
+// import { Icons } from '@superset-ui/core/components/Icons';
 
 export interface ChartCreationProps extends RouteComponentProps {
   user: UserWithPermissionsAndRoles;
@@ -266,9 +267,104 @@ export class ChartCreation extends PureComponent<
     });
   }
 
+  // render() {
+  //   const { theme } = this.props;
+  //   const isButtonDisabled = this.isBtnDisabled();
+  //   const VIEW_INSTRUCTIONS_TEXT = t('view instructions');
+  //   const datasetHelpText = this.state.canCreateDataset ? (
+  //     <span data-test="dataset-write">
+  //       <Link to="/dataset/add/" data-test="add-chart-new-dataset">
+  //         {t('Add a dataset')}
+  //       </Link>{' '}
+  //       {t('or')}{' '}
+  //       <a
+  //         href="https://superset.apache.org/docs/creating-charts-dashboards/creating-your-first-dashboard/#registering-a-new-table"
+  //         rel="noopener noreferrer"
+  //         target="_blank"
+  //         data-test="add-chart-new-dataset-instructions"
+  //       >
+  //         {`${VIEW_INSTRUCTIONS_TEXT} `}
+  //         <Icons.Full iconSize="m" iconColor={theme.colorPrimary} />
+  //       </a>
+  //       .
+  //     </span>
+  //   ) : (
+  //     <span data-test="no-dataset-write">
+  //       <a
+  //         href="https://superset.apache.org/docs/creating-charts-dashboards/creating-your-first-dashboard/#registering-a-new-table"
+  //         rel="noopener noreferrer"
+  //         target="_blank"
+  //       >
+  //         {`${VIEW_INSTRUCTIONS_TEXT} `}
+  //         <Icons.Full iconSize="m" iconColor={theme.colorPrimary} />
+  //       </a>
+  //       .
+  //     </span>
+  //   );
+
+  //   return (
+  //     <StyledContainer>
+  //       <h3>{t('Create a new chart')}</h3>
+  //       <Steps direction="vertical" size="small">
+  //         <Steps.Step
+  //           title={<StyledStepTitle>{t('Choose a dataset')}</StyledStepTitle>}
+  //           status={this.state.datasource?.value ? 'finish' : 'process'}
+  //           description={
+  //             <StyledStepDescription className="dataset">
+  //               <AsyncSelect
+  //                 autoFocus
+  //                 ariaLabel={t('Dataset')}
+  //                 name="select-datasource"
+  //                 onChange={this.changeDatasource}
+  //                 options={this.loadDatasources}
+  //                 optionFilterProps={['id', 'table_name']}
+  //                 placeholder={t('Choose a dataset')}
+  //                 showSearch
+  //                 value={this.state.datasource}
+  //               />
+  //               {datasetHelpText}
+  //             </StyledStepDescription>
+  //           }
+  //         />
+  //         <Steps.Step
+  //           title={<StyledStepTitle>{t('Choose chart type')}</StyledStepTitle>}
+  //           status={this.state.vizType ? 'finish' : 'process'}
+  //           description={
+  //             <StyledStepDescription>
+  //               <VizTypeGallery
+  //                 denyList={denyList}
+  //                 className="viz-gallery"
+  //                 onChange={this.changeVizType}
+  //                 onDoubleClick={this.onVizTypeDoubleClick}
+  //                 selectedViz={this.state.vizType}
+  //               />
+  //             </StyledStepDescription>
+  //           }
+  //         />
+  //       </Steps>
+  //       <div className="footer">
+  //         {isButtonDisabled && (
+  //           <span>
+  //             {t('Please select both a Dataset and a Chart type to proceed')}
+  //           </span>
+  //         )}
+  //         <Button
+  //           buttonStyle="primary"
+  //           disabled={isButtonDisabled}
+  //           onClick={this.gotoSlice}
+  //         >
+  //           {t('Create new chart')}
+  //         </Button>
+  //       </div>
+  //     </StyledContainer>
+  //   );
+  // }
   render() {
-    const { theme } = this.props;
+    // const { theme } = this.props;
     const isButtonDisabled = this.isBtnDisabled();
+    
+    // --- COMMENTED OUT START ---
+    /*
     const VIEW_INSTRUCTIONS_TEXT = t('view instructions');
     const datasetHelpText = this.state.canCreateDataset ? (
       <span data-test="dataset-write">
@@ -300,6 +396,8 @@ export class ChartCreation extends PureComponent<
         .
       </span>
     );
+    */
+    // --- COMMENTED OUT END ---
 
     return (
       <StyledContainer>
@@ -321,7 +419,7 @@ export class ChartCreation extends PureComponent<
                   showSearch
                   value={this.state.datasource}
                 />
-                {datasetHelpText}
+                {/* {datasetHelpText} */} 
               </StyledStepDescription>
             }
           />

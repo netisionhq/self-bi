@@ -16,5 +16,8 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-
+// import chart from './chart.svg';
+// import error from './error.svg';
+// import Loading from './loading.svg'
 export { Spin } from 'antd';
+// export { chart, error,Loading };

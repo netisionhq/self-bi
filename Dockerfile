@@ -116,7 +116,7 @@ RUN useradd --user-group -d ${SUPERSET_HOME} -m --no-log-init --shell /bin/bash 
 # Some bash scripts needed throughout the layers
 COPY --chmod=755 docker/*.sh /app/docker/
 
-RUN pip install --no-cache-dir --upgrade uv
+RUN pip install --trusted-host pypi.org --trusted-host files.pythonhosted.org --no-cache-dir --upgrade uv
 
 # Using uv as it's faster/simpler than pip
 RUN uv venv /app/.venv
@@ -203,7 +203,7 @@ RUN /app/docker/apt-install.sh \
       libldap2-dev
 
 # Pre-load examples DuckDB file if requested
-RUN if [ "$LOAD_EXAMPLES_DUCKDB" = "true" ]; then \
+RUN if [ "$LOAD_EXAMPLES_DUCKDB" = "false" ]; then \
         mkdir -p /app/data && \
         echo "Downloading pre-built examples.duckdb..." && \
         curl -L -o /app/data/examples.duckdb \
@@ -273,9 +273,9 @@ RUN --mount=type=cache,target=${SUPERSET_HOME}/.cache/uv \
     /app/docker/pip-install.sh --requires-build-essential -r requirements/development.txt
 # Install the superset package
 RUN --mount=type=cache,target=${SUPERSET_HOME}/.cache/uv \
-    uv pip install -e .
+    uv pip install --trusted-host pypi.org --trusted-host files.pythonhosted.org -e .
 
-RUN uv pip install .[postgres]
+RUN uv pip install --trusted-host pypi.org --trusted-host files.pythonhosted.org .[postgres]
 RUN python -m compileall /app/superset
 
 USER superset
@@ -285,7 +285,7 @@ USER superset
 ######################################################################
 FROM lean AS ci
 USER root
-RUN uv pip install .[postgres,duckdb]
+RUN uv pip install --trusted-host pypi.org --trusted-host files.pythonhosted.org .[postgres,duckdb]
 USER superset
 CMD ["/app/docker/entrypoints/docker-ci.sh"]
 
@@ -294,6 +294,6 @@ CMD ["/app/docker/entrypoints/docker-ci.sh"]
 ######################################################################
 FROM lean AS showtime
 USER root
-RUN uv pip install .[duckdb]
+RUN uv pip install --trusted-host pypi.org --trusted-host files.pythonhosted.org .[duckdb]
 USER superset
 CMD ["/app/docker/entrypoints/docker-ci.sh"]

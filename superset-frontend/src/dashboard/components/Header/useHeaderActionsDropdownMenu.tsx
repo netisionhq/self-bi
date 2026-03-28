@@ -139,6 +139,7 @@ export const useHeaderActionsMenu = ({
     [directPathToChild],
   );
 
+  
   const shareMenuItems = useShareMenuItems({
     title: t('Share'),
     disabled: isLoading,
@@ -254,12 +255,12 @@ export const useHeaderActionsMenu = ({
     menuItems.push(downloadMenuItem);
 
     // Share submenu
-    if (userCanShare) {
+    if (userCanShare && window.self==window.parent) {
       menuItems.push(shareMenuItems);
     }
 
     // Embed dashboard
-    if (!editMode && userCanCurate) {
+    if (!editMode && userCanCurate && window.self==window.parent) {
       menuItems.push({
         key: MenuKeys.ManageEmbedded,
         label: t('Embed dashboard'),

@@ -40,6 +40,7 @@ from typing import Any, Callable, Iterator, Literal, Optional, TYPE_CHECKING, Ty
 
 import click
 from celery.schedules import crontab
+from superset.custom_security_manager import CustomAuthSecurityManager
 from flask import Blueprint
 from flask_appbuilder.security.manager import AUTH_DB
 from flask_caching.backends.base import BaseCache
@@ -197,7 +198,8 @@ SUPERSET_DASHBOARD_PERIODICAL_REFRESH_LIMIT = 0
 SUPERSET_DASHBOARD_PERIODICAL_REFRESH_WARNING_MESSAGE = None
 
 SUPERSET_DASHBOARD_POSITION_DATA_LIMIT = 65535
-CUSTOM_SECURITY_MANAGER = None
+# CUSTOM_SECURITY_MANAGER = None
+CUSTOM_SECURITY_MANAGER = CustomAuthSecurityManager
 SQLALCHEMY_TRACK_MODIFICATIONS = False
 
 # ---------------------------------------------------------
@@ -302,7 +304,7 @@ SQLGLOT_DIALECTS_EXTENSIONS: DialectExtensions | Callable[[], DialectExtensions]
 QUERY_SEARCH_LIMIT = 1000
 
 # Flask-WTF flag for CSRF
-WTF_CSRF_ENABLED = True
+WTF_CSRF_ENABLED = False
 
 # Add endpoints that need to be exempt from CSRF protection
 WTF_CSRF_EXEMPT_LIST = [
@@ -558,7 +560,7 @@ DEFAULT_FEATURE_FLAGS: dict[str, bool] = {
     "DASHBOARD_VIRTUALIZATION": True,
     # This feature flag is stil in beta and is not recommended for production use.
     "GLOBAL_ASYNC_QUERIES": False,
-    "EMBEDDED_SUPERSET": False,
+    "EMBEDDED_SUPERSET": True,
     # Enables Alerts and reports new implementation
     "ALERT_REPORTS": False,
     "ALERT_REPORT_TABS": False,
@@ -786,8 +788,8 @@ THEME_DEFAULT: Theme = {
         "brandSpinnerUrl": None,
         "brandSpinnerSvg": None,
         # Default colors
-        "colorPrimary": "#2893B3",  # NOTE: previous lighter primary color was #20a7c9 # noqa: E501
-        "colorLink": "#2893B3",
+        "colorPrimary": "#5304c2",  # NOTE: previous lighter primary color was #20a7c9 # noqa: E501
+        "colorLink": "#5304c2",
         "colorError": "#e04355",
         "colorWarning": "#fcc700",
         "colorSuccess": "#5ac189",
@@ -838,6 +840,25 @@ THEME_FONT_URL_ALLOWED_DOMAINS: list[str] = [
 ]
 
 # ---------------------------------------------------
+# THEME_OVERRIDES is used for adding custom theme to superset
+# example code for "My theme" custom scheme
+# THEME_OVERRIDES = {
+#   "borderRadius": 4,
+#   "colors": {
+#     "primary": {
+#       "base": 'red',
+#     },
+#     "secondary": {
+#       "base": 'green',
+#     },
+#     "grayscale": {
+#       "base": 'orange',
+#     }
+#   }
+# }
+
+THEME_OVERRIDES: dict[str, Any] = {}
+
 # EXTRA_SEQUENTIAL_COLOR_SCHEMES is used for adding custom sequential color schemes
 # EXTRA_SEQUENTIAL_COLOR_SCHEMES =  [
 #     {
@@ -996,7 +1017,11 @@ CORS_OPTIONS: dict[Any, Any] = {
     "origins": [
         "https://tile.openstreetmap.org",
         "https://tile.osm.ch",
-    ]
+        "http://localhost:3000",
+    ],
+    "supports_credentials": True,
+    "allow_headers": ["*"],
+    "resources": [r"/api/v1/*"],
 }
 
 # Sanitizes the HTML content used in markdowns to allow its rendering in a safe manner.
@@ -1442,6 +1467,7 @@ CONFIG_PATH_ENV_VAR = "SUPERSET_CONFIG_PATH"
 
 # Extension startup update configuration
 EXTENSION_STARTUP_LOCK_TIMEOUT = 30  # Timeout in seconds for extension update locks
+
 
 # If a callable is specified, it will be called at app startup while passing
 # a reference to the Flask app. This can be used to alter the Flask app
@@ -2123,7 +2149,7 @@ GUEST_TOKEN_JWT_EXP_SECONDS = 300  # 5 minutes
 # When generating the guest token, ensure the
 # payload's `aud` matches GUEST_TOKEN_JWT_AUDIENCE.
 GUEST_TOKEN_JWT_AUDIENCE: Callable[[], str] | str | None = None
-
+# GUEST_TOKEN_JWT_AUDIENCE: {"http://localhost:8088"}
 # A callable that can be supplied to do extra validation of guest token configuration
 # for example certain RLS parameters:
 # lambda x: len(x['rls']) == 1 and "tenant_id=" in x['rls'][0]['clause']

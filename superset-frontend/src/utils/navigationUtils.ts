@@ -17,17 +17,29 @@
  * under the License.
  */
 import { ensureAppRoot } from './pathUtils';
+const isAbsoluteUrl = (url: string) =>
+  /^https?:\/\//i.test(url) || url.startsWith('//');
 
 export const navigateTo = (
   url: string,
   options?: { newWindow?: boolean; assign?: boolean },
-) => {
+) =>{
+
+ 
+  // if (options?.newWindow) {
+  //   window.open(ensureAppRoot(url), '_blank', 'noopener noreferrer');
+  // } else if (options?.assign) {
+  //   window.location.assign(ensureAppRoot(url));
+  // } else {
+  //   window.location.href = ensureAppRoot(url);
+  // }
+  const finalUrl = isAbsoluteUrl(url) ? url : ensureAppRoot(url);
   if (options?.newWindow) {
-    window.open(ensureAppRoot(url), '_blank', 'noopener noreferrer');
+    window.open(finalUrl, '_blank', 'noopener noreferrer');
   } else if (options?.assign) {
-    window.location.assign(ensureAppRoot(url));
+    window.location.assign(finalUrl);
   } else {
-    window.location.href = ensureAppRoot(url);
+    window.location.href = (finalUrl);
   }
 };
 

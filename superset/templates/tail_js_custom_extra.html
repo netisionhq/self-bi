@@ -23,3 +23,101 @@
     good place to include your custom frontend code, such as
     scripts to initialize google analytics, intercom, segment, etc.
   #}
+  <!-- <script type="text/javascript" >
+  // Custom JavaScript for Superset
+
+  (function() {
+    console.log('Custom script loaded');
+
+
+  //   async function isSessionDead() {
+  //     try {
+  //       // If we are already on the login page, we are definitely logged out
+  //       if (window.location.pathname.includes('/login')) return true;
+
+  //       // Ask the API if we are logged in
+  //       const res = await fetch("/api/v1/me/", {
+  //                   method: "GET",
+  //                   credentials: "include",   
+  //                   cache: "no-store",
+  //                 });
+  //       console.log("res")
+  //       return res.status === 401; 
+  //     } catch (e) {
+  //       return false; 
+  //     }
+  //  }
+    
+   
+    const getNextUrl = () => {
+        const url = new URL(window.location.href);
+        const next = url.searchParams.get("next");
+        return next;
+    };
+
+    
+    const executeLogin = async () => {
+      try {
+        console.log("[Auto-login] Executing login request...");
+
+        const loginRes = await fetch("/login/", {
+          method: "POST",
+          credentials: "include",
+          headers: { "Content-Type": "application/x-www-form-urlencoded" },
+          body: new URLSearchParams({
+            username: "Sales Analyst",
+            password: "admin",
+            provider: "db",
+           
+          }),
+        });
+
+        console.log("[Auto-login] Response:", loginRes.status);
+                
+
+        if (loginRes.ok || loginRes.redirected) {
+                return "SUCCESS";
+            } 
+            else {
+                return "FAIL";
+        }
+      } catch (e) {
+        console.error("[Auto-login] Error:", e);
+      }
+    };
+    //function to check is session expired or not periodically
+    // async function runAutoCheck() {
+
+    //   console.log("running auto check");
+    //     const dead = await isSessionDead();
+    //     console.log("dead results:",dead);
+    //     if (!dead) return; 
+    //     console.log("[Auto-Login] Session dead. Attempting login");
+    //     const result = await executeLogin();
+    //     if (result === "SUCCESS") {
+    //         console.log("[Auto-Login] ✅ Session revived!");
+    //         if (window.location.pathname.includes('/login')) {
+    //             window.location.href = getNextUrl();
+    //         } else {
+    //             window.location.reload(); 
+    //         }
+    //     } 
+       
+    // }
+    
+    document.addEventListener('DOMContentLoaded', function() {
+      console.log('Superset page loaded');
+      if (window.location.pathname.includes('/login')) {
+            console.log("executing login..");
+            executeLogin().then(result => {
+                if (result === "SUCCESS") window.location.href = getNextUrl();
+            });
+        }
+
+        
+        // console.log("starting autocheck..");
+        // setInterval(runAutoCheck, 30000);
+        // console.log("done ..");
+    });
+  })();
+</script> -->

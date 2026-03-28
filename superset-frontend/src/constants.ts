@@ -19,6 +19,8 @@
 import { DEFAULT_D3_FORMAT, DEFAULT_D3_TIME_FORMAT } from '@superset-ui/core';
 import { BootstrapData, CommonBootstrapData } from './types/bootstrapTypes';
 
+
+
 export const DATETIME_WITH_TIME_ZONE = 'YYYY-MM-DD HH:mm:ssZ';
 export const TIME_WITH_MS = 'HH:mm:ss.SSS';
 
@@ -200,4 +202,16 @@ export enum Actions {
  * Exports with row counts >= this value will use streaming with progress tracking.
  * Exports with row counts < this value will use traditional download.
  */
+///declare msg strings here(all previous usages)
+
 export const DEFAULT_CSV_STREAMING_ROW_THRESHOLD = 100000;
+
+
+// export const NEXUS_NAV_STRING= "NAVIGATE_SELF_BI";
+//export const NEXUS_NAV_STRING= process.env.NEXUS_NAV_STRING;
+//export const NEXUS_DOMAIN='http://localhost:3000';
+//xport const NEXUS_DOMAIN=process.env.NEXUS_DOMAIN;
+// superset-frontend/src/utils/constant.ts
+
+export const NEXUS_NAV_STRING = process.env.NEXUS_NAV_STRING || "NAVIGATE_SELF_BI";
+export const NEXUS_DOMAIN = process.env.NEXUS_DOMAIN || "http://localhost:3000";

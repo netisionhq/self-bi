@@ -39,4 +39,4 @@ export {
   LabelsColorMapSource,
 } from './LabelsColorMapSingleton';
 
-export const BRAND_COLOR = '#00A699';
+export const BRAND_COLOR = '#0019a6ff';

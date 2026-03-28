@@ -26,8 +26,56 @@ import sys
 
 from celery.schedules import crontab
 from flask_caching.backends.filesystemcache import FileSystemCache
+import ssl
+
+# WARNING: This disables SSL verification globally for this Python process
+# This is insecure and should NOT be used in production.
+if hasattr(ssl, '_create_unverified_context'):
+    ssl._create_default_https_context = ssl._create_unverified_context
+
+
+import logging
+LOG_LEVEL = logging.DEBUG
+FAB_LOG_LEVEL = logging.DEBUG
+
+
+
 
 logger = logging.getLogger()
+NEXUS_DOMAIN=os.getenv("NEXUS_DOMAIN","https://nexus-dev.netision.com")
+SELF_BI_DOMAIN=os.getenv("SELF_BI_DOMAIN","https://bi.netision.com")
+
+
+
+#----Modification to change x-frame flag
+# Enable CORS
+ENABLE_CORS = True
+GUEST_ROLE_NAME='Admin'
+
+# CORS options
+CORS_OPTIONS = {
+    'supports_credentials': True,
+    'allow_headers': ['*'], # Or be more specific: ['Authorization', 'Content-Type', 'X-CSRFToken']
+    'resources': ['*'],     # Or be more specific: {r"/api/*": {"origins": "http://localhost:3000"}}
+    'origins': [NEXUS_DOMAIN] # Add your Next.js app's origin
+}
+
+
+
+OVERRIDE_HTTP_HEADERS = {'X-Frame-Options': 'ALLOWALL'}
+TALISMAN_ENABLED = False
+ENABLE_CORS = True
+WTF_CSRF_ENABLED = False
+# HTTP_HEADERS={"X-Frame-Options":"ALLOWALL"}
+HTTP_HEADERS = {
+    # Modern replacement for X-Frame-Options (works in all current browsers)
+    "Content-Security-Policy": f"frame-ancestors 'self' {NEXUS_DOMAIN}"
+}
+# Allow embedding from your parent domain
+# HTTP_HEADERS = {
+#     "X-Frame-Options": "ALLOWFROM https://nexus-dev.netision.com"
+# }
+#---Modification done
 
 DATABASE_DIALECT = os.getenv("DATABASE_DIALECT")
 DATABASE_USER = os.getenv("DATABASE_USER")
@@ -49,17 +97,11 @@ SQLALCHEMY_DATABASE_URI = (
     f"{DATABASE_HOST}:{DATABASE_PORT}/{DATABASE_DB}"
 )
 
-# Use environment variable if set, otherwise construct from components
-# This MUST take precedence over any other configuration
-SQLALCHEMY_EXAMPLES_URI = os.getenv(
-    "SUPERSET__SQLALCHEMY_EXAMPLES_URI",
-    (
-        f"{DATABASE_DIALECT}://"
-        f"{EXAMPLES_USER}:{EXAMPLES_PASSWORD}@"
-        f"{EXAMPLES_HOST}:{EXAMPLES_PORT}/{EXAMPLES_DB}"
-    ),
+SQLALCHEMY_EXAMPLES_URI = (
+    f"{DATABASE_DIALECT}://"
+    f"{EXAMPLES_USER}:{EXAMPLES_PASSWORD}@"
+    f"{EXAMPLES_HOST}:{EXAMPLES_PORT}/{EXAMPLES_DB}"
 )
-
 
 REDIS_HOST = os.getenv("REDIS_HOST", "redis")
 REDIS_PORT = os.getenv("REDIS_PORT", "6379")
@@ -77,7 +119,6 @@ CACHE_CONFIG = {
     "CACHE_REDIS_DB": REDIS_RESULTS_DB,
 }
 DATA_CACHE_CONFIG = CACHE_CONFIG
-THUMBNAIL_CACHE_CONFIG = CACHE_CONFIG
 
 
 class CeleryConfig:
@@ -105,13 +146,13 @@ class CeleryConfig:
 
 CELERY_CONFIG = CeleryConfig
 
-FEATURE_FLAGS = {"ALERT_REPORTS": True}
+FEATURE_FLAGS = {"ALERT_REPORTS": True,"EMBEDDED_SUPERSET": True,"GLOBAL_ASYNC_QUERIES": False, "GUEST_TOKEN": True, }
 ALERT_REPORTS_NOTIFICATION_DRY_RUN = True
-WEBDRIVER_BASEURL = f"http://superset_app{os.environ.get('SUPERSET_APP_ROOT', '/')}/"  # When using docker compose baseurl should be http://superset_nginx{ENV{BASEPATH}}/  # noqa: E501
+GUEST_TOKEN_JWT_AUDIENCE = SELF_BI_DOMAIN
+
+WEBDRIVER_BASEURL = "http://superset:8088/"  # When using docker compose baseurl should be http://superset_app:8088/  # noqa: E501
 # The base URL for the email report hyperlinks.
-WEBDRIVER_BASEURL_USER_FRIENDLY = (
-    f"http://localhost:8888/{os.environ.get('SUPERSET_APP_ROOT', '/')}/"
-)
+WEBDRIVER_BASEURL_USER_FRIENDLY = WEBDRIVER_BASEURL
 SQLLAB_CTAS_NO_LIMIT = True
 
 log_level_text = os.getenv("SUPERSET_LOG_LEVEL", "INFO")
@@ -135,10 +176,17 @@ if os.getenv("CYPRESS_CONFIG") == "true":
 #
 try:
     import superset_config_docker
-    from superset_config_docker import *  # noqa: F403
+    from superset_config_docker import *  # noqa
 
     logger.info(
-        "Loaded your Docker configuration at [%s]", superset_config_docker.__file__
+        f"Loaded your Docker configuration at " f"[{superset_config_docker.__file__}]"
     )
 except ImportError:
     logger.info("Using default Docker config...")
+
+# APP_ICON = "superset-frontend/src/assets/branding/superset-logo-horiz.png"
+# APP_ICON="/static/assets/images/Nexus.png"
+APP_NAME="SELF-BI"
+SESSION_COOKIE_SAMESITE = "None"
+SESSION_COOKIE_SECURE = True
+ENABLE_PROXY_FIX = True

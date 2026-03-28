@@ -846,16 +846,16 @@ export const useExploreAdditionalActionsMenu = (
     });
 
     // Run in SQL Lab
-    if (datasource) {
-      menuItems.push({
-        key: MENU_KEYS.RUN_IN_SQL_LAB,
-        label: t('Run in SQL Lab'),
-        onClick: e => {
-          onOpenInEditor(latestQueryFormData, e.domEvent?.metaKey);
-          setIsDropdownVisible(false);
-        },
-      });
-    }
+    // if (datasource) {
+    //   menuItems.push({
+    //     key: MENU_KEYS.RUN_IN_SQL_LAB,
+    //     label: t('Run in SQL Lab'),
+    //     onClick: e => {
+    //       onOpenInEditor(latestQueryFormData, e.domEvent?.metaKey);
+    //       setIsDropdownVisible(false);
+    //     },
+    //   });
+    // }
 
     return <Menu selectable={false} items={menuItems} {...rest} />;
   }, [

@@ -95,6 +95,7 @@ import isDashboardLoading from '../../util/isDashboardLoading';
 import { useChartIds } from '../../util/charts/useChartIds';
 import { useDashboardMetadataBar } from './useDashboardMetadataBar';
 import { useHeaderActionsMenu } from './useHeaderActionsDropdownMenu';
+import { NEXUS_DOMAIN, NEXUS_NAV_STRING } from 'src/constants';
 
 const extensionsRegistry = getExtensionsRegistry();
 
@@ -156,13 +157,58 @@ const discardBtnStyle = theme => css`
   height: ${theme.sizeUnit * 8}px;
 `;
 
+// const discardChanges = () => {
+//   const url = new URL(window.location.href);
+
+//   url.searchParams.delete('edit');
+//   const segments = url.pathname.split('/');
+  
+//   // The ID is usually the last segment in this specific URL structure
+//   const id = segments.pop() || segments.pop();
+//   console.log("id fetched==",id);
+//   window.location.assign(url);
+// };
 const discardChanges = () => {
   const url = new URL(window.location.href);
+  const params = url.searchParams;
+  
+  // 1. Determine if we are in an iframe
+  const isEmbedded = window.self !== window.top;
 
-  url.searchParams.delete('edit');
-  window.location.assign(url);
+  // 2. Fetch ID: Try native_id parameter first, then fallback to URL segments
+  let id = params.get('native_id');
+
+  if (!id) {
+    // Fallback: Get the last part of the path (e.g., /superset/dashboard/123/ -> 123)
+    const segments = url.pathname.split('/').filter(Boolean);
+    id = segments[segments.length - 1];
+    console.log("ID fetched from URL path:", id);
+  } else {
+    console.log("ID fetched from native_id param:", id);
+  }
+
+  // 3. Cleanup the URL (for the non-embedded redirect)
+  params.delete('edit');
+  params.delete('native_id'); // Optional: clean up our custom param too
+
+  // 4. Navigation Logic
+  if (isEmbedded) {
+    // If we're embedded, we send the message up to the parent
+    const targetUrl = `/self-bi/${id}`;
+    console.log("Embedded mode detected. Sending postMessage to parent:", targetUrl);
+
+    window.top?.postMessage(
+      { 
+        type: NEXUS_NAV_STRING, 
+        url: targetUrl 
+      }, 
+      NEXUS_DOMAIN
+    );
+  } else {
+    // Standard behavior: redirect the current window to the "non-edit" version
+    window.location.assign(url.toString());
+  }
 };
-
 const Header = () => {
   const dispatch = useDispatch();
   const [didNotifyMaxUndoHistoryToast, setDidNotifyMaxUndoHistoryToast] =
@@ -562,6 +608,34 @@ const Header = () => {
   );
 
   const handleEnterEditMode = useCallback(() => {
+    const url = new URL(window.location.href);
+  const params = url.searchParams;
+  const isEmbedded = window.self !== window.top;
+
+  // Try native_id parameter first, then fallback to last URL segment
+  let id = params.get('native_id');
+  if (!id) {
+    const segments = url.pathname.split('/').filter(Boolean);
+    id = segments[segments.length - 1];
+    console.log("ID fetched from URL path:", id);
+  } else {
+    console.log("ID fetched from native_id param:", id);
+  }
+
+  // 3. Post message to parent if embedded
+  if (isEmbedded && id) {
+    const targetUrl = `/self-bi/edit/${id}`;
+    console.log("Embedded mode detected. Sending postMessage to parent:", targetUrl);
+
+    window.top?.postMessage(
+      { 
+        type: NEXUS_NAV_STRING, 
+        url: targetUrl 
+      }, 
+      NEXUS_DOMAIN // Ensure this matches your host's origin
+    );
+    return;
+  }
     toggleEditMode();
     boundActionCreators.clearDashboardHistory?.();
     boundActionCreators.setUnsavedChanges(false);

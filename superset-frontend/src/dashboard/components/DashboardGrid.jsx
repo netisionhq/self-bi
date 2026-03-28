@@ -30,6 +30,8 @@ import DashboardComponent from '../containers/DashboardComponent';
 import { Droppable } from './dnd/DragDroppable';
 import { GRID_GUTTER_SIZE, GRID_COLUMN_COUNT } from '../util/constants';
 import { TAB_TYPE } from '../util/componentTypes';
+import { NEXUS_DOMAIN, NEXUS_NAV_STRING } from 'src/constants';
+
 
 const propTypes = {
   depth: PropTypes.number.isRequired,
@@ -131,6 +133,25 @@ class DashboardGrid extends PureComponent {
     this.setGridRef = this.setGridRef.bind(this);
     this.handleChangeTab = this.handleChangeTab.bind(this);
   }
+  notifyParentOfEdit() {
+    const url = new URL(window.location.href);
+    const params = url.searchParams;
+    const isEmbedded = window.self !== window.top;
+
+    let id = params.get('native_id');
+    if (!id) {
+      const segments = url.pathname.split('/').filter(Boolean);
+      id = segments[segments.length - 1];
+    }
+
+    if (isEmbedded && id) {
+      window.top?.postMessage(
+        { type: NEXUS_NAV_STRING, url: `/self-bi/edit/${id}` },
+        NEXUS_DOMAIN
+      );
+    }
+  }
+  
 
   getRowGuidePosition(resizeRef) {
     if (resizeRef && this.grid) {
@@ -142,6 +163,7 @@ class DashboardGrid extends PureComponent {
     }
     return null;
   }
+  
 
   setGridRef(ref) {
     this.grid = ref;
@@ -219,9 +241,19 @@ class DashboardGrid extends PureComponent {
           </>
         }
         buttonAction={() => {
-          navigateTo(`/chart/add?dashboard_id=${dashboardId}`, {
+          
+          if(window.self!=window.parent){
+             
+           navigateTo(`${NEXUS_DOMAIN}/self-bi/chart/add/${dashboardId}?sidebar=false`, {
             newWindow: true,
           });
+          return;
+          }
+          navigateTo(`/chart/add?dashboard_id=${dashboardId}`, {
+            newWindow: true,
+            isExternal: true,
+          });
+         
         }}
         image="chart.svg"
       />
@@ -241,9 +273,21 @@ class DashboardGrid extends PureComponent {
           </>
         }
         buttonAction={() => {
+
+          
+          if(window.self!=window.parent){
+           
+            navigateTo(`${NEXUS_DOMAIN}/self-bi/chart/add/${dashboardId}?sidebar=false`, {
+              newWindow: true,
+              isExternal: true,
+            });
+           return;
+          }
           navigateTo(`/chart/add?dashboard_id=${dashboardId}`, {
             newWindow: true,
+            isExternal: true,
           });
+          
         }}
         image="chart.svg"
       />
@@ -259,6 +303,7 @@ class DashboardGrid extends PureComponent {
           canEdit &&
           (() => {
             setEditMode(true);
+            notifyParentOfEdit();
           })
         }
         image="chart.svg"

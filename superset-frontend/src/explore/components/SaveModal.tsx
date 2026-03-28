@@ -48,9 +48,11 @@ import { SaveActionType } from 'src/explore/types';
 import { UserWithPermissionsAndRoles } from 'src/types/bootstrapTypes';
 import {
   removeChartState,
+ // removeChartState,
   updateChartState,
 } from 'src/dashboard/actions/dashboardState';
 import { Dashboard } from 'src/types/Dashboard';
+import {  NEXUS_DOMAIN, NEXUS_NAV_STRING} from 'src/constants';
 
 // Session storage key for recent dashboard
 const SK_DASHBOARD_ID = 'save_chart_recent_dashboard';
@@ -280,11 +282,57 @@ class SaveModal extends Component<SaveModalProps, SaveModalState> {
       }
 
       // Go to new dashboard url
+      // if (gotodash && dashboard ) {
+        
+      //   // this.props.dispatch(removeChartState(value.id));
+      //   // this.props.history.push(dashboard.url);
+      //   // return;
+      //   //if()---> create ,event file and import from it
+      //   if(embed==1){
+
+      //   }
+      //   const targetUrl = `/self-bi/${dashboard?.id ?? value.id}`;
+      //   console.log("sending data to localhost;3000");
+
+      //     // Tell the parent window (your Next.js app) to navigate
+      //     window.top?.postMessage(
+      //       { type: 'NAVIGATE_SELF_BI', url: targetUrl },
+      //       'http://localhost:3000',//http://64.227.152.66:3000/
+      //     );
+
+      //     return;
+      // }
       if (gotodash && dashboard) {
-        this.props.dispatch(removeChartState(value.id));
-        this.props.history.push(dashboard.url);
-        return;
-      }
+       
+        const url = new URL(window.location.href);
+        const isEmbedded = window.self !== window.top;
+        console.log("complete url::",url);
+        console.log("isEmbedded",isEmbedded);
+        
+
+        if (isEmbedded) {
+          const targetUrl = `/self-bi/${dashboard?.id ?? value.id}`;
+          console.log("i got the dashboard id");
+          console.log("sending data to localhost:3000", NEXUS_DOMAIN);
+
+
+          window.top?.postMessage(
+            { type:NEXUS_NAV_STRING, url: targetUrl },
+            
+            NEXUS_DOMAIN // or your prod origin
+          );
+
+          return;
+  }
+
+  // ✅ Original behavior (non-embedded mode)
+  console.log(" // ✅ Original behavior (non-embedded mode)");
+  
+  this.props.dispatch(removeChartState(value.id));
+  this.props.history.push(dashboard.url);
+  return;
+}
+
 
       const searchParams = this.handleRedirect(window.location.search, value);
       this.props.history.replace(`/explore/?${searchParams.toString()}`);
