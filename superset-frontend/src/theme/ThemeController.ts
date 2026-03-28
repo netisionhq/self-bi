@@ -41,7 +41,9 @@ const STORAGE_KEYS = {
   APPLIED_THEME_ID: 'superset-applied-theme-id',
 } as const;
 
-const MEDIA_QUERY_DARK_SCHEME = '(prefers-color-scheme: dark)';
+// const MEDIA_QUERY_DARK_SCHEME = '(prefers-color-scheme: dark)';
+const MEDIA_QUERY_DARK_SCHEME = '(prefers-color-scheme: light)';
+
 
 export class LocalStorageAdapter implements ThemeStorage {
   getItem(key: string): string | null {
